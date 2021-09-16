@@ -116,16 +116,16 @@ trait TranslatableTabToRowTrait
      * @param  [array] $childFields [meta fields]
      * @return void
      */
-    protected function extractChildFields($field, $key)
+    protected function extractChildFields($parentField, $key)
     {
-        foreach ($field->originalFields as $childField) {
+        foreach ($parentField->originalFields as $childField) {
             if ($childField instanceof NovaTabTranslatable) {
                 $this->extractChildFields($childField->data, $key);
             } else {
                 if (array_search($childField->attribute, array_column($this->childFieldsArr, 'attribute')) === false) {
                     // @todo: we should not randomly apply rules to child-fields.
                     $childField = $this->applyRulesForChildFields($childField);
-                    if (isset($field->panel)) $childField->panel = $field->panel;
+                    if (! $parentField instanceof NovaTabTranslatable && $parentField->panel) $childField->panel = $parentField->panel;
                     $this->childFieldsArr[$key][] = $childField;
                 }
             }
